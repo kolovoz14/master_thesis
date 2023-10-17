@@ -1,0 +1,37 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "com.iot_app",
+    "ComponentVersion": "1.0.0",
+    "ComponentDescription": "Component for generating test data and sending them to cloud",
+    "ComponentPublisher": "August Majewski",
+    "ComponentConfiguration": {
+        "DefaultConfiguration": {
+            "accessControl": {
+                "aws.greengrass.ipc.mqttproxy": {
+                    "com.device_monitor.mqtt:mqttproxy:1": {
+                        "policyDescription": "Allows access to publish data to AWS cloud using mqtt",
+                        "operations": [
+                            "aws.greengrass#PublishToIoTCore"
+                        ],
+                        "resources": [
+                            "iot_app/*"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "Manifests": [
+        {
+            "Platform": {
+                "os": "linux"
+            },
+            "Lifecycle": {
+                "Run": {
+                    "RequiresPrivilege": false,
+                    "Script": "python3 -u {artifacts:path}/iot_app.py"
+                }
+            }
+        }
+    ]
+}

@@ -1,3 +1,16 @@
+# grengrass development functions
+load_fun.sh
+# development folder
+ignore_folder
+# application config file
+*config.json
+
+# Ignore sensitive information
+*.key
+*.pem
+*.env
+*.config
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
