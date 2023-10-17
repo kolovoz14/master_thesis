@@ -14,7 +14,7 @@
                             "aws.greengrass#PublishToIoTCore"
                         ],
                         "resources": [
-                            "iot_app/all_data"
+                            "iot_app/*"
                         ]
                     }
                 }

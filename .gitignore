@@ -2,6 +2,8 @@
 load_fun.sh
 # development folder
 ignore_folder
+# application config file
+*config.json
 
 # Ignore sensitive information
 *.key
