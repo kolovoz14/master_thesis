@@ -12,8 +12,8 @@ from awsiot.greengrasscoreipc.model import (
 )
 
 def get_app_info(config:dict,parameter_names):
-    #print(config)
-    #parameter_names=["applicationId","nodeId","domain"]
+    ### reads and returns desired parameters from config variable
+
     parameter_values=[]
     for param in parameter_names:
         value=config.get(param,"")
@@ -25,6 +25,8 @@ def get_app_info(config:dict,parameter_names):
 
 
 def get_app_config():
+    ### reads config file and return config variable
+
     config_path=sys.path[0]+"/config.json"
     try:
         with open(config_path) as config_file:
@@ -35,12 +37,19 @@ def get_app_config():
 
     return config
 
+def generate_dict_data(keys_number:int=0)->dict:
+    ### generate data dictionary with desired size, used to simulate senor data for performance tests
+
+    dict_data={}
+    dict_data={i:i for i in range(keys_number)}
+    return dict_data
+
 def get_data():
     return{}
 
-def send_data(data):
-    global ipc_client
-    global config
+def send_data(ipc_client,config,data):
+    ### sends data to IoT Core
+
     [applicationId,nodeId,domain]=get_app_info(config,parameter_names=["applicationId","nodeId","domain"])
     qos=QOS.AT_LEAST_ONCE
     TIMEOUT=5
@@ -57,26 +66,28 @@ def send_data(data):
     future.result(TIMEOUT)
     print("payload_data sent to cloud: "+str(payload_data))
 
-def init_app():
-    global ipc_client,config,sending_period
-    config={}
-    sending_period=30
+def init_app(sending_period=30):
+    ### initialise app varaibles and objects
+
     config=get_app_config()
     ipc_client=awsiot.greengrasscoreipc.connect()
+    return ipc_client,config,sending_period
 
+def main(ipc_client,config,sending_period):
+    ### app main loop
 
-def main():
-    global sending_period
+    global test_data
     while(True):
         loop_start_time=time.time()
-        data=get_data()
-        send_data(data)
+        send_data(ipc_client,config,data=test_data)
         time.sleep(sending_period-(time.time()-loop_start_time))  # starts next loop after sending_period
 
 
 if(__name__=="__main__"):
     print("iot_app starts")
-    init_app()
-    main()
+    ipc_client,config,sending_period=init_app(30)
+    KEYS_NUMBER=sys.argv[1] if(len(sys.argv)>=2) else 10
+    test_data=generate_dict_data(KEYS_NUMBER)   # for performance tests only
+    main(ipc_client,config,sending_period)
 
 
