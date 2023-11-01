@@ -82,12 +82,26 @@ def main(ipc_client,config,sending_period):
         send_data(ipc_client,config,data=test_data)
         time.sleep(sending_period-(time.time()-loop_start_time))  # starts next loop after sending_period
 
+def run_speed_tests(config:dict):
+    ### run tests if "tests" parameter in config file exist and is not equal to 0
+        do_tests=config.get("tests",0)
+        if(do_tests):
+            try:
+                import speed_test_cases
+                print("finished tests")
+            except Exception as e:
+                print(e)
+            finally:
+                return 1
+        else:
+            return 0
 
 if(__name__=="__main__"):
     print("iot_app starts")
     ipc_client,config,sending_period=init_app(30)
-    KEYS_NUMBER=sys.argv[1] if(len(sys.argv)>=2) else 10
-    test_data=generate_dict_data(KEYS_NUMBER)   # for performance tests only
-    main(ipc_client,config,sending_period)
+    if(not run_speed_tests(config)): # if config["tests"]!=0 skip tests and run main app
+        KEYS_NUMBER=sys.argv[1] if(len(sys.argv)>=2) else 10
+        test_data=generate_dict_data(KEYS_NUMBER)   # for performance tests only
+        main(ipc_client,config,sending_period)
 
 

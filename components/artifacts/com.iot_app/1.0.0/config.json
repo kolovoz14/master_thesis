@@ -1,5 +1,11 @@
 {
   "applicationId":"iot_app",
   "nodeId":"123",
-  "domain":"iot_app"
+  "domain":"iot_app",
+  "tests":1,
+  "keys_number_list":[
+    10,
+    100,
+    1000
+  ]
 }
