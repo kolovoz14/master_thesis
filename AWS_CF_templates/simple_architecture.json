@@ -1,0 +1,101 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Metadata": {
+        "AWS::CloudFormation::Designer": {
+            "287b7ae4-d46b-45ce-8209-a7c6f22dde4e": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 430,
+                    "y": 190
+                },
+                "z": 0,
+                "embeds": [],
+                "dependson": [
+                    "5fb1cb83-4591-4722-86cf-b9f52658cf74"
+                ]
+            },
+            "5fb1cb83-4591-4722-86cf-b9f52658cf74": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 700,
+                    "y": 190
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "d9ee51e1-3211-470b-b4f0-b41a918164f8": {
+                "source": {
+                    "id": "287b7ae4-d46b-45ce-8209-a7c6f22dde4e"
+                },
+                "target": {
+                    "id": "5fb1cb83-4591-4722-86cf-b9f52658cf74"
+                },
+                "z": 1
+            }
+        }
+    },
+    "Parameters": {
+        "DataTopicName": {
+            "Type": "String",
+            "Default": "iot_app/iot_app",
+            "Description": "Enter the topic name for which you want to pass the data to data base"
+        },
+        "DataBaseTableName": {
+            "Type": "String",
+            "Default": "IoTAppDataTableSimple",
+            "Description": "Enter the name of DynamoDb data table"
+        }
+    },
+    "Resources": {
+        "IoTAppTopicRule": {
+            "Type": "AWS::IoT::TopicRule",
+            "Properties": {
+                "RuleName": "IoTAppToDataTableRule",
+                "TopicRulePayload": {
+                    "RuleDisabled": "true",
+                    "Sql": {
+                        "Fn::Sub": "SELECT * FROM {DataTopicName}"
+                    },
+                    "Actions": [
+                        {
+                            "dynamoDBv2": {
+                                "putItem": {
+                                    "tableName": {
+                                        "Ref": "DataBaseTableName"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "287b7ae4-d46b-45ce-8209-a7c6f22dde4e"
+                }
+            },
+            "DependsOn": [
+                "IoTAppDataTable"
+            ]
+        },
+        "IoTAppDataTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": {
+                    "Ref": "DataBaseTableName"
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "5fb1cb83-4591-4722-86cf-b9f52658cf74"
+                }
+            }
+        }
+    }
+}
