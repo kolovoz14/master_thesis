@@ -87,6 +87,27 @@
         "IoTAppDataTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": "applicationId",
+                        "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "time",
+                        "AttributeType": "N"
+                    }
+                ],
+                "BillingMode":"PAY_PER_REQUEST",
+                "KeySchema": [
+                    {
+                        "AttributeName": "applicationId",
+                        "KeyType": "HASH"
+                    },
+                    {
+                        "AttributeName": "time",
+                        "KeyType": "RANGE"
+                    }
+                ],
                 "TableName": {
                     "Ref": "DataBaseTableName"
                 }
