@@ -50,6 +50,11 @@
             "Type": "String",
             "Default": "IoTAppDataTableSimple",
             "Description": "Enter the name of DynamoDb data table"
+        },
+        "DataBaseTableRoleName": {
+            "Type": "String",
+            "Default": "IoTAppDynamoDBRoleSimple",
+            "Description": "Enter the name of DynamoDb data table role"
         }
     },
     "Resources": {
@@ -60,15 +65,28 @@
                 "TopicRulePayload": {
                     "RuleDisabled": "true",
                     "Sql": {
-                        "Fn::Sub": "SELECT * FROM {DataTopicName}"
+                        "Fn::Sub": [
+                            "SELECT * FROM '${topicName}'",
+                            {
+                                "topicName": {
+                                    "Ref": "DataTopicName"
+                                }
+                            }
+                        ]
                     },
                     "Actions": [
                         {
-                            "dynamoDBv2": {
-                                "putItem": {
-                                    "tableName": {
+                            "DynamoDBv2": {
+                                "PutItem": {
+                                    "TableName": {
                                         "Ref": "DataBaseTableName"
                                     }
+                                },
+                                "RoleArn": {
+                                    "Fn::GetAtt": [
+                                        "IoTAppDynamoDBRole",
+                                        "Arn"
+                                    ]
                                 }
                             }
                         }
@@ -97,7 +115,7 @@
                         "AttributeType": "N"
                     }
                 ],
-                "BillingMode":"PAY_PER_REQUEST",
+                "BillingMode": "PAY_PER_REQUEST",
                 "KeySchema": [
                     {
                         "AttributeName": "applicationId",
@@ -115,6 +133,26 @@
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
                     "id": "5fb1cb83-4591-4722-86cf-b9f52658cf74"
+                }
+            }
+        },
+        "IoTAppDynamoDBRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": {
+                    "Ref": "DataBaseTableRoleName"
+                },
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "iot.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
                 }
             }
         }
