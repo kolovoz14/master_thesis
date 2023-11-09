@@ -61,8 +61,13 @@ by subscribing to right mqtt topic (by default "iot_app/all_data" )
 For the part of the application that uses cloud services, several cloud architecture designs have been prepared. These architectures are saved as AWS CloudFormation templates, which are YAML/JSON files that describe all the necessary resources and their relationships.
 
 ### Installation and usage
-All AWS CloudFormation templates can be found in "AWS_CF_templates" folder. To view specific architecture open [AWS CloudFormation Designer](https://console.aws.amazon.com/cloudformation/designer) and import chosen template file. To implement the architecture, click the 'Create Stack' button and follow the provided instructions.
+All AWS CloudFormation templates can be found in "AWS_CF_templates" folder. To view specific architecture open [AWS CloudFormation Designer](https://console.aws.amazon.com/cloudformation/designer) and import chosen template file. To implement the architecture, click the 'Create Stack' button and follow the provided instructions. Example designed architecture, which assigns data from IoT core topic to DynamoDB data table, was presented bellow.
 
+
+<figure style="text-align:center">
+  <img src=./docs/images/topic_to_dynamoBD.jpg width="50%">
+  <figcaption >example AWS CloudFormation architecture </figcaption>
+</figure>
 
 ## To be done
 Things that needs to be done:
