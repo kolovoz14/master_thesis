@@ -1,0 +1,9 @@
+Master thesis - Analysis of cybersecurity, performance and building application aspect for different cloud environments
+Copyright August Majewski 2023.
+
+This project utilizes the AWS IoT Device SDK v2 for Python provided by Amazon.com, Inc. or its affiliates.
+
+The AWS IoT Device SDK v2 for Python software is licensed under the Apache License, Version 2.0 (the "Apache-2.0" license).
+For more information, refer to the NOTICE file available in the AWS IoT Device SDK v2 for Python.
+
+The NOTICE file available in the AWS IoT Device SDK v2 for Python contains information about copyrights, licenses, and other important information related to the software.

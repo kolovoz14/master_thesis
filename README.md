@@ -18,6 +18,7 @@ This repository showcases the project component of the master's thesis, where an
     - [Installation and usage](#installation-and-usage)
   - [To be done](#to-be-done)
   - [Author](#author)
+  - [Licences](#licences)
 
 ## IoT Application
 Instructions on how to install, run the application, and view the results.
@@ -79,3 +80,8 @@ Things that needs to be done:
 ## Author
 
 [August Majewski](https://github.com/kolovoz14)
+
+## Licences
+
+This project utilizes the AWS IoT Device SDK v2 for Python provided by Amazon.com, Inc. or its affiliates
+The AWS IoT Device SDK v2 for Python software is licensed under the Apache License, Version 2.0 (the "Apache-2.0" license).
