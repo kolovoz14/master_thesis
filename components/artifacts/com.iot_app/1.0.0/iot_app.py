@@ -55,7 +55,7 @@ def send_data(ipc_client,config,data):
     TIMEOUT=5
 
     payload_data = dict(payload =data, applicationId = applicationId, nodeId = nodeId,
-                        domain = domain, time = int(datetime.now().timestamp()))
+                        domain = domain, time = round(datetime.now().timestamp(),3))
     request = PublishToIoTCoreRequest()
     request.topic_name = domain + '/all_data'
     request.payload = bytes(json.dumps(payload_data), "utf-8")
@@ -82,12 +82,13 @@ def main(ipc_client,config,sending_period):
         send_data(ipc_client,config,data=test_data)
         time.sleep(sending_period-(time.time()-loop_start_time))  # starts next loop after sending_period
 
-def run_speed_tests(config:dict):
+def run_test_case(config:dict):
     ### run tests if "tests" parameter in config file exist and is not equal to 0
-        do_tests=config.get("tests",0)
-        if(do_tests):
+        test=config.get("tests",0)
+        if(test):
             try:
-                import speed_test_cases
+                import test_cases
+                test_cases.run_selected_test(test)
                 print("finished tests")
             except Exception as e:
                 print(e)
@@ -99,7 +100,7 @@ def run_speed_tests(config:dict):
 if(__name__=="__main__"):
     print("iot_app starts")
     ipc_client,config,sending_period=init_app(30)
-    if(not run_speed_tests(config)): # if config["tests"]!=0 skip tests and run main app
+    if(not run_test_case(config)): # if config["tests"]!=0 skip tests and run main app
         KEYS_NUMBER=sys.argv[1] if(len(sys.argv)>=2) else 10
         test_data=generate_dict_data(KEYS_NUMBER)   # for performance tests only
         main(ipc_client,config,sending_period)
