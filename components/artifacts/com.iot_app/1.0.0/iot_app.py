@@ -66,10 +66,11 @@ def send_data(ipc_client,config,data):
     future.result(TIMEOUT)
     print("payload_data sent to cloud: "+str(payload_data))
 
-def init_app(sending_period=30):
+def init_app(sending_period):
     ### initialise app varaibles and objects
 
     config=get_app_config()
+    sending_period=config.get("sending_period",600)
     ipc_client=awsiot.greengrasscoreipc.connect()
     return ipc_client,config,sending_period
 
@@ -101,8 +102,7 @@ if(__name__=="__main__"):
     print("iot_app starts")
     ipc_client,config,sending_period=init_app(30)
     if(not run_test_case(config)): # if config["tests"]!=0 skip tests and run main app
-        KEYS_NUMBER=sys.argv[1] if(len(sys.argv)>=2) else 10
-        test_data=generate_dict_data(KEYS_NUMBER)   # for performance tests only
+        test_data={}
         main(ipc_client,config,sending_period)
 
 
