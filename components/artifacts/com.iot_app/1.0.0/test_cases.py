@@ -6,8 +6,9 @@ def send_different_data_sizes(ipc_client,config,keys_number_list):
     test_data_list=[generate_dict_data(keys_number) for keys_number in keys_number_list]
 
     for test_data in test_data_list:
-        send_data(ipc_client,config,data=test_data)
-        time.sleep(1)
+        for i in range(10):
+            send_data(ipc_client,config,data=test_data)
+            time.sleep(1)
 
 def send_one_empty(ipc_client,config):
     send_data(ipc_client,config,data={})

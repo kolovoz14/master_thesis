@@ -42,6 +42,7 @@ def generate_dict_data(keys_number:int=0)->dict:
 
     dict_data={}
     dict_data={i:i for i in range(keys_number)}
+    dict_data["data_count"]=keys_number
     return dict_data
 
 def get_data():
