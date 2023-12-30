@@ -2,6 +2,7 @@ import json
 import time
 import boto3
 import csv
+from decimal import Decimal
 
 def check_if_file_exists(s3_client:boto3.client,bucket_name,s3_key):
     try:
@@ -40,8 +41,7 @@ def lambda_handler(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table('IoTAppDataTableSimple')
 
-        data=json.loads(json.dumps(event)) #convert data
-
+        data=json.loads(json.dumps(event),parse_float=Decimal) #convert data
         start_time = time.time()
         table.put_item(Item=data) # save to ddb
         end_time=time.time()

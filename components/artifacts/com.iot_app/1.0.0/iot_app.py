@@ -42,7 +42,6 @@ def generate_dict_data(keys_number:int=0)->dict:
 
     dict_data={}
     dict_data={i:i for i in range(keys_number)}
-    dict_data["data_count"]=keys_number
     return dict_data
 
 def get_data():
@@ -57,6 +56,8 @@ def send_data(ipc_client,config,data):
 
     payload_data = dict(payload =data, applicationId = applicationId, nodeId = nodeId,
                         domain = domain, time = round(datetime.now().timestamp(),3))
+    if(config.get("tests",0) is not 0):
+        payload_data["data_count"]=len(payload_data["payload"])
     request = PublishToIoTCoreRequest()
     request.topic_name = domain + '/all_data'
     request.payload = bytes(json.dumps(payload_data), "utf-8")
