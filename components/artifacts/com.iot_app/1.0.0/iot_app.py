@@ -56,7 +56,7 @@ def send_data(ipc_client,config,data):
 
     payload_data = dict(payload =data, applicationId = applicationId, nodeId = nodeId,
                         domain = domain, time = round(datetime.now().timestamp(),3))
-    if(config.get("tests",0) is not 0):
+    if(config.get("tests",0)!=0):
         payload_data["data_count"]=len(payload_data["payload"])
     request = PublishToIoTCoreRequest()
     request.topic_name = domain + '/all_data'
