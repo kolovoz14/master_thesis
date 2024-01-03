@@ -55,7 +55,9 @@ def send_data(ipc_client,config,data):
     TIMEOUT=5
 
     payload_data = dict(payload =data, applicationId = applicationId, nodeId = nodeId,
-                        domain = domain, time = int(datetime.now().timestamp()))
+                        domain = domain, time = round(datetime.now().timestamp(),3))
+    if(config.get("tests",0)!=0):
+        payload_data["data_count"]=len(payload_data["payload"])
     request = PublishToIoTCoreRequest()
     request.topic_name = domain + '/all_data'
     request.payload = bytes(json.dumps(payload_data), "utf-8")
@@ -66,10 +68,11 @@ def send_data(ipc_client,config,data):
     future.result(TIMEOUT)
     print("payload_data sent to cloud: "+str(payload_data))
 
-def init_app(sending_period=30):
+def init_app(sending_period):
     ### initialise app varaibles and objects
 
     config=get_app_config()
+    sending_period=config.get("sending_period",600)
     ipc_client=awsiot.greengrasscoreipc.connect()
     return ipc_client,config,sending_period
 
@@ -82,12 +85,26 @@ def main(ipc_client,config,sending_period):
         send_data(ipc_client,config,data=test_data)
         time.sleep(sending_period-(time.time()-loop_start_time))  # starts next loop after sending_period
 
+def run_test_case(config:dict):
+    ### run tests if "tests" parameter in config file exist and is not equal to 0
+        test=config.get("tests",0)
+        if(test):
+            try:
+                import test_cases
+                test_cases.run_selected_test(test)
+                print("finished tests")
+            except Exception as e:
+                print(e)
+            finally:
+                return 1
+        else:
+            return 0
 
 if(__name__=="__main__"):
     print("iot_app starts")
     ipc_client,config,sending_period=init_app(30)
-    KEYS_NUMBER=sys.argv[1] if(len(sys.argv)>=2) else 10
-    test_data=generate_dict_data(KEYS_NUMBER)   # for performance tests only
-    main(ipc_client,config,sending_period)
+    if(not run_test_case(config)): # if config["tests"]!=0 skip tests and run main app
+        test_data={}
+        main(ipc_client,config,sending_period)
 
 
