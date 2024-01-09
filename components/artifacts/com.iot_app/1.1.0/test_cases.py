@@ -2,6 +2,13 @@ from iot_app import *
 
 print("starts speed_test_cases.py")
 
+def generate_dict_data(keys_number:int=0)->dict:
+    ### generate data dictionary with desired size, used to simulate senor data for performance tests
+
+    dict_data={}
+    dict_data={i:i for i in range(keys_number)}
+    return dict_data
+
 def send_different_data_sizes(ipc_client,config,keys_number_list):
     test_data_list=[generate_dict_data(keys_number) for keys_number in keys_number_list]
 
