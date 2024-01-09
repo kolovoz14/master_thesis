@@ -1,0 +1,81 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "com.iot_app",
+    "ComponentVersion": "1.1.0",
+    "ComponentDescription": "Component for generating test data and sending them to cloud",
+    "ComponentPublisher": "August Majewski",
+    "ComponentDependencies": {
+        "aws.greengrass.Nucleus": {
+            "VersionRequirement": ">=2.6.0",
+            "DependencyType": "SOFT"
+        },
+        "aws.greengrass.ShadowManager": {
+            "VersionRequirement": ">=2.0.0",
+            "DependencyType": "SOFT"
+        }
+    },
+    "ComponentConfiguration": {
+        "DefaultConfiguration": {
+            "accessControl": {
+                "aws.greengrass.ipc.mqttproxy": {
+                    "com.device_monitor.mqtt:mqttproxy:1": {
+                        "policyDescription": "Allows access to publish data to AWS cloud using mqtt",
+                        "operations": [
+                            "aws.greengrass#PublishToIoTCore"
+                        ],
+                        "resources": [
+                            "iot_app/*"
+                        ]
+                    }
+                },
+                "aws.greengrass.ipc.pubsub": {
+                    "com.iot_app:pubsub:1": {
+                        "policyDescription": "Allows access to shadow pubsub topics",
+                        "operations": [
+                            "aws.greengrass#SubscribeToTopic",
+                            "aws.greengrass#PublishToTopic"
+                        ],
+                        "resources": [
+                            "$aws/things/{iot:thingName}/shadow/name/iot_app_config/*"
+                        ]
+                    }
+                },
+                "aws.greengrass.ShadowManager": {
+                    "com.iot_app:1": {
+                        "policyDescription": "Allows access to shadows",
+                        "operations": [
+                            "aws.greengrass#GetThingShadow",
+                            "aws.greengrass#UpdateThingShadow",
+                            "aws.greengrass#DeleteThingShadow"
+                        ],
+                        "resources": [
+                            "$aws/things/{iot:thingName}/shadow/name/iot_app_config"
+                        ]
+                    },
+                    "com.iot_app:2": {
+                        "policyDescription": "Allows access to things with shadows",
+                        "operations": [
+                            "aws.greengrass#ListNamedShadowsForThing"
+                        ],
+                        "resources": [
+                            "{iot:thingName}"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "Manifests": [
+        {
+            "Platform": {
+                "os": "linux"
+            },
+            "Lifecycle": {
+                "Run": {
+                    "RequiresPrivilege": false,
+                    "Script": "python3 -u {artifacts:path}/iot_app.py {iot:thingName}"
+                }
+            }
+        }
+    ]
+}

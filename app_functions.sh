@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export COMPONENT_NAME="com.iot_app"
-export COMPONENT_VERSION="1.0.0"
+export COMPONENT_VERSION="1.1.0"
 export RECIPE_DIR="./components/recipe"
 export ARTIFACT_DIR="./components/artifacts"
 export GREENGRASS_CLI_PATH="/greengrass/v2/bin/greengrass-cli"
