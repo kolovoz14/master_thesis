@@ -84,21 +84,17 @@ def send_data(ipc_client,config,data):
     future.result(TIMEOUT)
     logger.info("payload_data sent to cloud: "+str(payload_data))
 
-def init_app(sending_period):
-    ### initialise app varaibles and objects
-
-    config=get_app_config()
-    sending_period=config.get("sending_period",600)
-    ipc_client=awsiot.greengrasscoreipc.connect()
-    return ipc_client,config,sending_period
 
 def init_aws_connection(config_name):
     ### connect to iot core,get thing name, get config from shadow,start subscribing to shadow delta
-
-    ipc_client=awsiot.greengrasscoreipc.connect()
-    thing_name=sys.argv[1]
-    config=shad_mod.get_device_shadow_config(ipc_client=ipc_client,thing_name=thing_name,shadow_config_name=config_name)
-    shadow_config_sub_handler=shad_mod.subscribe_to_config_delta(ipc_client=ipc_client,thing_name=thing_name,shadow_config_name=config_name)
+    try:
+        ipc_client=awsiot.greengrasscoreipc.connect()
+        thing_name=sys.argv[1]
+        config=shad_mod.get_device_shadow_config(ipc_client=ipc_client,thing_name=thing_name,shadow_config_name=config_name)
+        shadow_config_sub_handler=shad_mod.subscribe_to_config_delta(ipc_client=ipc_client,thing_name=thing_name,shadow_config_name=config_name)
+    except Exception as e:
+        logger.error(e)
+        sys.exit(2)
 
     return ipc_client,config,shadow_config_sub_handler,thing_name
 
@@ -108,7 +104,7 @@ def main():
     ipc_client,config,shadow_config_sub_handler,thing_name=init_aws_connection(shadow_config_name)
     sending_period=config.get("sending_period",600)
 
-    if(run_test_case(config)): # if config["tests"]!=0 skip tests and run main app, else run tests and exit
+    if(run_test_case(ipc_client,config)): # if config["tests"]!=0 skip tests and run main app, else run tests and exit
        sys.exit(1)
 
     while(True):
@@ -123,13 +119,13 @@ def main():
 
         time.sleep(sending_period-(time.time()-loop_start_time))  # starts next loop after sending_period
 
-def run_test_case(config:dict):
+def run_test_case(ipc_client,config:dict):
     ### run tests if "tests" parameter in config file exist and is not equal to 0
         test=config.get("tests",0)
         if(test):
             try:
                 import test_cases
-                test_cases.run_selected_test(test)
+                test_cases.run_selected_test(ipc_client,config)
                 logger.info("finished tests")
             except Exception as e:
                 logger.info(e)

@@ -20,9 +20,8 @@ def send_different_data_sizes(ipc_client,config,keys_number_list):
 def send_one_empty(ipc_client,config):
     send_data(ipc_client,config,data={})
 
-def run_selected_test(test_number=0):
+def run_selected_test(ipc_client,config,test_number=0):
     print(f"starting test case {test_number}")
-    ipc_client,config,sending_period=init_app(30)
     if(test_number==1):
         send_one_empty(ipc_client,config)
     if(test_number==2):
