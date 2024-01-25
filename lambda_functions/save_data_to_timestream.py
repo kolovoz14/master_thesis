@@ -76,25 +76,13 @@ def lambda_handler(event, context):
         for measure_name,measure_val in iot_payload["payload"].items():
             record["MeasureValues"].append(prepare_measure(measure_name,measure_val))
 
-
         # Write the record to Timestream
-        start_time=time.time()
         response = timestream_client.write_records(
             DatabaseName=database_name,
             TableName=table_name,
             CommonAttributes=common_attributes,
             Records=[record]
         )
-        end_time=time.time()
-        saving_time = end_time - start_time    # Calculate time difference
-        print(f"saving_time: {saving_time} seconds")
-
-        data_count=len(iot_payload["payload"].keys())
-        dynamodb = boto3.resource('dynamodb')
-        results_table = dynamodb.Table('timestream_saving_times')
-        results_row={'data_count':data_count,'start_time':start_time,'end_time':end_time,'saving_time':saving_time}
-        results=json.loads(json.dumps(results_row),parse_float=Decimal) #convert data
-        results_table.put_item(Item=results) # save results to ddb
 
         #print(response)
     except Exception as e:
