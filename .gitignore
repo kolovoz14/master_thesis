@@ -5,6 +5,9 @@ ignore_folder
 # application config file
 *config.json
 
+# debug logs
+read_measurements/**.json
+
 # Ignore sensitive information
 *.key
 *.pem
