@@ -16,6 +16,10 @@ This repository showcases the project component of the master's thesis, where an
   - [AWS architectures](#aws-architectures)
     - [Introduction](#introduction)
     - [Installation and usage](#installation-and-usage)
+  - [Performance tests](#performance-tests)
+    - [Transmission time](#transmission-time)
+    - [Database items assignment time](#database-items-assignment-time)
+    - [Database items query time](#database-items-query-time)
   - [To be done](#to-be-done)
   - [Author](#author)
   - [Licences](#licences)
@@ -64,17 +68,67 @@ For the part of the application that uses cloud services, several cloud architec
 ### Installation and usage
 All AWS CloudFormation templates can be found in "AWS_CF_templates" folder. To view specific architecture open [AWS CloudFormation Designer](https://console.aws.amazon.com/cloudformation/designer) and import chosen template file. To implement the architecture, click the 'Create Stack' button and follow the provided instructions. Example designed architecture, which assigns data from IoT core topic to DynamoDB data table, was presented bellow.
 
-
-<figure style="text-align:center">
-  <img src=./docs/images/topic_to_dynamoBD.jpg width="50%">
+<div style="text-align: center;">
+<figure>
+  <img src=./docs/images/architectures/topic_to_dynamoBD.jpg width="450">
   <figcaption >example AWS CloudFormation architecture </figcaption>
 </figure>
+</div>
+
+## Performance tests
+To test designed architecture performance and compare variants with DynamoDb and TImestream databases, a few lambda functions were implemented.The following tests were performed:
+
+- transmission time
+- database items assignment time
+- database items query time
+
+Moreover a system stress test were prepared to test system's behavior when hundreds of devices are simultaneously sending data.
+
+Below results of created lambda test were presented:
+
+### Transmission time
+
+transmission time from device to AWS cloud (same for DynamoDB and TImestream variants) :
+
+<div style="text-align: center;">
+  <figure>
+  <img src=./docs/images/test_results_lambda/DDB_saving_time_data_count.jpg width="800">
+  <figcaption >transmission time </figcaption>
+</figure>
+</div>
+
+### Database items assignment time
+
+- DynamoDB
+<div style="text-align: center;">
+  <figure>
+  <img src=./docs/images/test_results_lambda/DDB_saving_time_data_count.jpg width="800">
+  <figcaption >database items assignment time for DynamoDB vs data count </figcaption>
+</figure>
+</div>
+
+- Timestream
+<div style="text-align: center;">
+<figure >
+  <img src=./docs/images/test_results_lambda/timestream_saving_time_data_count.jpg width="800">
+  <figcaption >database items assignment time for Timestream vs data count </figcaption>
+</figure>
+</div>
+
+### Database items query time
+
+<div style="text-align: center;">
+<figure >
+  <img src=./docs/images/test_results_lambda/query_measurement_number.jpg width="800">
+  <figcaption >database items query time for Timestream and DynamoDB vs measurement number </figcaption>
+</figure>
+</div>
+
 
 ## To be done
 Things that needs to be done:
-- create performance test cases
-- choose and design different cloud architectures
-- create different cloud architectures
+- add stress test results to README
+- add final architecture schematics to README
 - create unit tests
 
 ## Author
